@@ -20,12 +20,17 @@ module.exports = () => async function requestHandler(req, res) {
     )
   }
 
+  console.log(await importActionFile())
+
+  console.log('running '+'__action__'+functionName)
+
   // grab the func property - it is the original function given to createAction
-  const func = (await importActionFile())[functionName].func
-  const details = {
+  const func = (await importActionFile())['__action__'+functionName]
+  const context = {
     data: req.body.data,
     headers: req.headers,
-    context: { req, res }
+    req,
+    res
   }
 
   if (!func) {
@@ -45,9 +50,13 @@ module.exports = () => async function requestHandler(req, res) {
   }
 
   try {
-    const output = await runActionServerSide({ func, fileId, functionName, details })
+    const output = await runActionServerSide({ func, fileId, functionName, context })
 
     if (!res.headersSent) {
+      for (let [key, value] of Object.entries(output.headers)) {
+        res.setHeader(key, value)
+      }
+
       res.status(output.status).json(output)
     }
   }

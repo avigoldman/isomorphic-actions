@@ -3,30 +3,28 @@ const runActionServerSide = require('./runActionServerSide')
 const runActionClientSide = require('./runActionClientSide')
 
 module.exports = async function runAction({
-  func,
   fileId,
   functionName,
   endpoint,
-  details
+  context
 }) {
-  details = Object.assign({}, { data: undefined, headers: {} }, details);
+  context = Object.assign({}, { data: undefined, headers: {} }, context);
   const isServer = typeof window === 'undefined'
 
   if (isServer) {
-    if (!details.context) {
-      throw new Error(`Expected \`context\` parameter containing \`req\` and \`res\` to be provided when calling \`${functionName}\` from the server. e.g.: ${functionName}({ context: { req, res } })`)
+    if (!context.req || !context.res) {
+      throw new Error(`Expected \`req\` and \`res\` to be provided when calling \`${functionName}\` from the server. e.g.: ${functionName}({ req, res })`)
     }
 
-    details.headers = { ...details.context.req.headers, ...details.headers }
+    context.headers = { ...context.req.headers, ...context.headers }
 
-    try {
-      return runActionServerSide({ func, fileId, functionName, endpoint, details })
+    if (!endpoint.startsWith('http')) {
+      const origin = context.req.protocol ? context.req.protocol : 'http' + '://' + context.req.headers.host
+      endpoint = `${origin}${endpoint}`
     }
-    // run the error through the same process as if it went through an API call
-    catch (error) {
-      throw deserializeError(serializeError(error))
-    }
+
+    return runActionClientSide({ fileId, functionName, endpoint, context })
   }
 
-  return runActionClientSide({ func, fileId, functionName, endpoint, details })
+  return runActionClientSide({ fileId, functionName, endpoint, context })
 }

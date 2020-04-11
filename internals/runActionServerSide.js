@@ -1,18 +1,19 @@
-const isPlainObject = require('lodash/isplainobject')
-const allowedKeys = ['results', 'status']
+const isPlainObject = require('lodash/isPlainObject')
+const isUndefined = require('lodash/isUndefined')
+const allowedKeys = ['data', 'headers', 'status']
 
 module.exports = async function runActionServerSide({
   func,
   fileId,
   functionName,
-  details
+  context
 }) {
   try {
-    const output = await func(details)
+    const output = await func(context)
 
     // output validation
     if (!isPlainObject(output)) {
-      throw new Error(`Expected \`${functionName}\` to return an object. e.g.: return { results: { title: 'My Title', content: '...' } }`)
+      throw new Error(`Expected \`${functionName}\` to return an object. e.g.: return { data: { title: 'My Title', content: '...' } }`)
     }
 
     const keys = Object.keys(output)
@@ -20,7 +21,7 @@ module.exports = async function runActionServerSide({
 
     // output validation
     if (extraKeys.length > 0) {
-      throw new Error(`Additional keys were returned from \`${functionName}\`. The output of your function must be nested under the \`results\` key, e.g.: return { results: { title: 'My Title', content: '...' } } Keys that need to be moved: ${extraKeys}.`)
+      throw new Error(`Additional keys were returned from \`${functionName}\`. The output of your function must be nested under the \`data\` key, e.g.: return { data: { title: 'My Title', content: '...' } } Keys that need to be moved: ${extraKeys}.`)
     }
 
     // TODO: what happens if they return a status above 400
@@ -28,7 +29,11 @@ module.exports = async function runActionServerSide({
       throw new Error(`\`${functionName}\` returned a status of ${output.status}. To respond with a status above 299, you must throw an error with the status set in in the \`status\` property. You can throw an \`IsomorphicError\` to do this. ie.g.: throw new IsomorphicError('My error', { status: 401 })`)
     }
 
-    return Object.assign({}, { results: null, status: 200 }, output)
+    if (!isUndefined(output.headers) && !isPlainObject(output.headers)) {
+      throw new Error(`Expected \`headers\` key \`${functionName}\` to an object. Received ${typeof output.headers}.`)
+    }
+
+    return Object.assign({}, { data: null, headers: {}, status: 200 }, output)
 
   }
   catch(error) {

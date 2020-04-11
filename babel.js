@@ -8,10 +8,14 @@ module.exports = function ({ template, types: t }) {
   return {
     name: 'isomorphic-actions',
     pre(state) {
+      this.root;
       this.actions = [];
       this.createActionAliases = [];
     },
     visitor: {
+      Program(path) {
+        this.root = path;
+      },
       /** find the aliases of createAction and createSimpleAction */
       ImportDeclaration(path) {
         if (path.node.source.value !== 'isomorphic-actions') {
@@ -83,14 +87,27 @@ module.exports = function ({ template, types: t }) {
         const fileId = t.stringLiteral(shortHash(filename))
         const functionName = t.stringLiteral(name)
 
+        /** replace function call with object that contains the details for the helper to find and run the function */
         expression.arguments = [
           t.objectExpression([
-            t.objectProperty(t.stringLiteral('func'), func),
             t.objectProperty(t.stringLiteral('fileId'), fileId),
             t.objectProperty(t.stringLiteral('functionName'), functionName),
             t.objectProperty(t.stringLiteral('endpoint'), t.stringLiteral(endpoint)),
           ])
         ]
+
+        /** export the function at the bottom of the file with a prefixed name */
+        this.root.unshiftContainer(
+          'body',
+          t.exportNamedDeclaration(
+            t.variableDeclaration('const', [
+              t.variableDeclarator(
+                t.Identifier('__action__'+name),
+                func
+              )
+            ])
+          )
+        )
       },
     },
     post(state) {
