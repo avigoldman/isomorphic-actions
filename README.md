@@ -56,15 +56,7 @@ INSERT DIAGRAM
 
 ## Actions
 
-### createSimpleAction
-
-- create an action
-  - single param - data
-  - may only appear at the top level
-  - returns results
-- run an action
-
-### createAction
+### defineAction
 
 - create an action
   - single param - context

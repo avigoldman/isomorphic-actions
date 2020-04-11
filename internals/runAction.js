@@ -9,7 +9,7 @@ module.exports = async function runAction({
   debug,
   context
 }) {
-  context = Object.assign({}, { data: undefined, headers: {} }, context);
+  context = Object.assign({}, { data: null, headers: {} }, context);
   const isServer = typeof window === 'undefined'
 
   if (isServer) {

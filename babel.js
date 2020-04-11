@@ -1,5 +1,5 @@
-// get imports to figure out what name is used for "createAction" utility
-// transform action declarations from createAction(func) to createAction({ func, filename, functionName })
+// get imports to figure out what name is used for "defineAction" utility
+// transform action declarations from defineAction(func) to defineAction({ func, filename, functionName })
 // verify that all actions are exported and throw an error if they aren't
 
 const shortHash = require('short-hash');
@@ -10,47 +10,47 @@ module.exports = function ({ template, types: t, ...other }) {
     name: 'isomorphic-actions',
     pre(state) {
       this.root;
-      this.createActionAliases = [];
+      this.defineActionAliases = [];
     },
     visitor: {
       Program(path) {
         this.root = path;
       },
-      /** find the aliases of createAction */
+      /** find the aliases of defineAction */
       ImportDeclaration(path) {
         if (path.node.source.value !== 'isomorphic-actions') {
           return
         }
 
-        const createActionAliases = path.node.specifiers
+        const defineActionAliases = path.node.specifiers
           .filter((specifier) => {
             return (
               specifier.type === 'ImportSpecifier' &&
-              ['createAction'].includes(specifier.imported.name)
+              ['defineAction'].includes(specifier.imported.name)
             )
           })
           .map((specifier) => {
             return specifier.local.name
           })
 
-        this.createActionAliases = [ ...this.createActionAliases, ...createActionAliases ]
+        this.defineActionAliases = [ ...this.defineActionAliases, ...defineActionAliases ]
       },
-      /** find createAction usage */
+      /** find defineAction usage */
       CallExpression(path, { file, opts: { endpoint } }) {
-        if (this.createActionAliases.length === 0) {
+        if (this.defineActionAliases.length === 0) {
           return
         }
 
         const filename = file.opts.filename
         const expression = path.node
 
-        if (!this.createActionAliases.includes(expression.callee.name)) {
+        if (!this.defineActionAliases.includes(expression.callee.name)) {
           return
         }
 
         // todo - also account for arrays
         // todo - if assigned to property in an object, use that as the name
-        // first parent that isn't a function call wrapping createAction
+        // first parent that isn't a function call wrapping defineAction
         const parent = path.findParent((path) => !path.isCallExpression()).node
 
         const name = parent.type === 'VariableDeclarator' ? parent.id.name : parent.type === 'ExportDefaultDeclaration' ? '[Default Export Function]' : '[Anonymous Function]'
@@ -61,7 +61,7 @@ module.exports = function ({ template, types: t, ...other }) {
           return
         }
 
-        const exportId = '__action__'+shortHash(generate(expression).code)
+        const exportId = shortHash(generate(expression).code)
 
         /** replace function call with object that contains the details for the helper to find and run the function */
         expression.arguments = [
@@ -90,7 +90,7 @@ module.exports = function ({ template, types: t, ...other }) {
           t.exportNamedDeclaration(
             t.variableDeclaration('const', [
               t.variableDeclarator(
-                t.identifier(exportId),
+                t.identifier('__action__'+exportId),
                 func
               )
             ])

@@ -4,38 +4,54 @@
 
 const { serializeError } = require('serialize-error')
 const get = require('lodash/get')
+const formidable = require('formidable')
 const runActionServerSide = require('./internals/runActionServerSide')
+
+const parseReq = (req) => {
+  return new Promise((resolve, reject) => {
+    const form = formidable({ multiples: true });
+
+    form.parse(req, (error, fields, files) => {
+      if (error) {
+        return reject(error)
+      }
+
+      return resolve({
+        files: Object.values(files),
+        debug: JSON.parse(get(fields, 'debug')),
+        data: JSON.parse(get(fields, 'data')),
+      })
+    });
+  })
+}
 
 module.exports = () => async function requestHandler(req, res) {
   const fileId = req.query.f
   const exportId = req.query.e
-  const debug = req.body.debug
   const importActionFile = actionFilesMap[fileId]
+  const { debug, data, files } = await parseReq(req)
 
   res.setHeader('X-Isomorphic-Action', 'true')
 
   if (!importActionFile) {
-    const error = new Error(`Function \`${debug.functionName}\` not found. File ID \`${fileId}\` does not exist.`)
+    const error = new Error(`Function \`${debug.functionName}\` not found. File \`${debug.filename}\` was not imported.`)
     error.status = 404
     return res.status(404).json(
       { error: serializeError(error) }
     )
   }
 
-  // grab the func property - it is the original function given to createAction
-  const func = get(await importActionFile(), exportId)
+  const func = get(await importActionFile(), '__action__'+exportId)
   const context = {
-    data: req.body.data,
+    data,
+    files,
     headers: req.headers,
     req,
     res
   }
 
-  console.log(await importActionFile())
 
-  console.log({ exportId })
-
-  if (!func || !exportId.startsWith('__action__')) {
+  if (!func) {
     const error = new Error(`Function \`${debug.functionName}\` not found.`)
     error.status = 404
     return res.status(404).json(

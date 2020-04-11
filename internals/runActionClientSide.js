@@ -2,24 +2,35 @@ const _ = require('lodash')
 const axios = require('axios')
 const { deserializeError } = require("serialize-error")
 const IsomorphicError = require('../Error')
+const Data = require('form-data');
 
 module.exports = async function runActionClientSide({
   exportId,
   fileId,
   endpoint,
   debug,
-  context 
+  context // data, headers, files
 }) {
+  const body = new Data()
+  body.append('debug', JSON.stringify(debug))
+  body.append('data', JSON.stringify(context.data))
+  
+  if (context.files) {
+    _.toArray(context.files).forEach((file, i) => {
+      body.append(`files[${i}]`, file);
+    })
+  }
+
   try {
     const response = await axios({
       url: endpoint,
       params: { f: fileId, e: exportId },
       method: 'POST',
-      headers: context.headers,
-      data: {
-        data: context.data,
-        debug: debug
+      headers: {
+        ...context.headers,
+        ...(body.getHeaders ? body.getHeaders() : {})
       },
+      data: body,
       validateStatus: function (status) {
         return status < 500; // Reject only if the status code is greater than or equal to 500
       }

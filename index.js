@@ -1,7 +1,7 @@
 const isFunction = require('lodash/isFunction');
 const runAction = require('./internals/runAction')
 
-function createAction(config) {
+function defineAction(config) {
   if (isFunction(config)) {
     throw new Error('Babel transformation failed. Make sure you added isomorphic-actions/babel to your babel plugins correctly.')
   }
@@ -20,4 +20,4 @@ function createAction(config) {
   }
 }
 
-module.exports = { createAction }
+module.exports = { defineAction }
