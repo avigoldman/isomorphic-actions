@@ -3,29 +3,27 @@
 // const actionFilesMap = { /* object of imports for files that create actions */ }
 
 const { serializeError } = require('serialize-error')
+const get = require('lodash/get')
 const runActionServerSide = require('./internals/runActionServerSide')
 
 module.exports = () => async function requestHandler(req, res) {
-  const fileId = req.query.fid
-  const functionName = req.query.f
+  const fileId = req.query.f
+  const exportId = req.query.e
+  const debug = req.body.debug
   const importActionFile = actionFilesMap[fileId]
 
   res.setHeader('X-Isomorphic-Action', 'true')
 
   if (!importActionFile) {
-    const error = new Error(`Function \`${functionName}\` not found. File ID \`${fileId}\` does not exist.`)
+    const error = new Error(`Function \`${debug.functionName}\` not found. File ID \`${fileId}\` does not exist.`)
     error.status = 404
     return res.status(404).json(
       { error: serializeError(error) }
     )
   }
 
-  console.log(await importActionFile())
-
-  console.log('running '+'__action__'+functionName)
-
   // grab the func property - it is the original function given to createAction
-  const func = (await importActionFile())['__action__'+functionName]
+  const func = get(await importActionFile(), exportId)
   const context = {
     data: req.body.data,
     headers: req.headers,
@@ -33,8 +31,12 @@ module.exports = () => async function requestHandler(req, res) {
     res
   }
 
-  if (!func) {
-    const error = new Error(`Function \`${functionName}\` not found.`)
+  console.log(await importActionFile())
+
+  console.log({ exportId })
+
+  if (!func || !exportId.startsWith('__action__')) {
+    const error = new Error(`Function \`${debug.functionName}\` not found.`)
     error.status = 404
     return res.status(404).json(
       { error: serializeError(error) }
@@ -50,7 +52,7 @@ module.exports = () => async function requestHandler(req, res) {
   }
 
   try {
-    const output = await runActionServerSide({ func, fileId, functionName, context })
+    const output = await runActionServerSide({ func, exportId, fileId, debug, context })
 
     if (!res.headersSent) {
       for (let [key, value] of Object.entries(output.headers)) {

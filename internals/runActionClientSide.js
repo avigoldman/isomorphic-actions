@@ -4,20 +4,21 @@ const { deserializeError } = require("serialize-error")
 const IsomorphicError = require('../Error')
 
 module.exports = async function runActionClientSide({
-  func,
+  exportId,
   fileId,
-  functionName,
   endpoint,
-  context,
+  debug,
+  context 
 }) {
   try {
     const response = await axios({
       url: endpoint,
-      params: { fid: fileId, f: functionName },
+      params: { f: fileId, e: exportId },
       method: 'POST',
       headers: context.headers,
       data: {
-        data: context.data
+        data: context.data,
+        debug: debug
       },
       validateStatus: function (status) {
         return status < 500; // Reject only if the status code is greater than or equal to 500
@@ -51,10 +52,7 @@ module.exports = async function runActionClientSide({
   // 5xx or critical errors only
   catch (error) {
     if (error.response) {
-      const error = new Error(error.response.data)
-      error.status = response.status
-
-      throw error
+      throw new IsomorphicError(error.response.data, { status: error.response.status })
     }
 
     throw error

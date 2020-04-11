@@ -3,9 +3,10 @@ const runActionServerSide = require('./runActionServerSide')
 const runActionClientSide = require('./runActionClientSide')
 
 module.exports = async function runAction({
+  exportId,
   fileId,
-  functionName,
   endpoint,
+  debug,
   context
 }) {
   context = Object.assign({}, { data: undefined, headers: {} }, context);
@@ -23,8 +24,8 @@ module.exports = async function runAction({
       endpoint = `${origin}${endpoint}`
     }
 
-    return runActionClientSide({ fileId, functionName, endpoint, context })
+    return runActionClientSide({ exportId, fileId, endpoint, debug, context })
   }
 
-  return runActionClientSide({ fileId, functionName, endpoint, context })
+  return runActionClientSide({ exportId, fileId, endpoint, debug, context })
 }

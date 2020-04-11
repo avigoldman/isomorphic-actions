@@ -4,8 +4,9 @@ const allowedKeys = ['data', 'headers', 'status']
 
 module.exports = async function runActionServerSide({
   func,
+  exportId,
   fileId,
-  functionName,
+  debug,
   context
 }) {
   try {
@@ -13,7 +14,7 @@ module.exports = async function runActionServerSide({
 
     // output validation
     if (!isPlainObject(output)) {
-      throw new Error(`Expected \`${functionName}\` to return an object. e.g.: return { data: { title: 'My Title', content: '...' } }`)
+      throw new Error(`Expected \`${debug.functionName}\` to return an object. e.g.: return { data: { title: 'My Title', content: '...' } }`)
     }
 
     const keys = Object.keys(output)
@@ -21,12 +22,12 @@ module.exports = async function runActionServerSide({
 
     // output validation
     if (extraKeys.length > 0) {
-      throw new Error(`Additional keys were returned from \`${functionName}\`. The output of your function must be nested under the \`data\` key, e.g.: return { data: { title: 'My Title', content: '...' } } Keys that need to be moved: ${extraKeys}.`)
+      throw new Error(`Additional keys were returned from \`${debug.functionName}\`. The output of your function must be nested under the \`data\` key, e.g.: return { data: { title: 'My Title', content: '...' } } Keys that need to be moved: ${extraKeys}.`)
     }
 
     // TODO: what happens if they return a status above 400
     if (output.status > 299) {
-      throw new Error(`\`${functionName}\` returned a status of ${output.status}. To respond with a status above 299, you must throw an error with the status set in in the \`status\` property. You can throw an \`IsomorphicError\` to do this. ie.g.: throw new IsomorphicError('My error', { status: 401 })`)
+      throw new Error(`\`${debug.functionName}\` returned a status of ${output.status}. To respond with a status above 299, you must throw an error with the status set in in the \`status\` property. You can throw an \`IsomorphicError\` to do this. ie.g.: throw new IsomorphicError('My error', { status: 401 })`)
     }
 
     if (!isUndefined(output.headers) && !isPlainObject(output.headers)) {

@@ -1,5 +1,4 @@
 const isFunction = require('lodash/isFunction');
-const assign = require('lodash/assign');
 const runAction = require('./internals/runAction')
 
 function createAction(config) {
@@ -7,18 +6,18 @@ function createAction(config) {
     throw new Error('Babel transformation failed. Make sure you added isomorphic-actions/babel to your babel plugins correctly.')
   }
 
-  const { fileId, functionName, endpoint } = config
 
-  function runner(context) {
+  const { exportId, fileId, endpoint, debug } = config
+
+  return function runner(context) {
     return runAction({
+      exportId,
       fileId,
-      functionName,
       endpoint,
+      debug,
       context
     })
   }
-
-  return assign(runner, config)
 }
 
 module.exports = { createAction }
