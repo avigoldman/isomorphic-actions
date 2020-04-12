@@ -5,7 +5,7 @@ const IsomorphicError = require('../Error')
 const Data = require('form-data');
 
 module.exports = async function runActionClientSide({
-  exportId,
+  actionId,
   fileId,
   endpoint,
   debug,
@@ -24,7 +24,7 @@ module.exports = async function runActionClientSide({
   try {
     const response = await axios({
       url: endpoint,
-      params: { f: fileId, e: exportId },
+      params: { a: actionId, f: fileId },
       method: 'POST',
       headers: {
         ...context.headers,

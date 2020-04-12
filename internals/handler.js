@@ -26,8 +26,8 @@ const parseReq = (req) => {
 }
 
 module.exports = () => async function requestHandler(req, res) {
+  const actionId = req.query.a
   const fileId = req.query.f
-  const exportId = req.query.e
   const importActionFile = actionFilesMap[fileId]
   const { debug, data, files } = await parseReq(req)
 
@@ -41,7 +41,7 @@ module.exports = () => async function requestHandler(req, res) {
     )
   }
 
-  const func = get(await importActionFile(), '__action__'+exportId)
+  const func = get(await importActionFile(), '__action__'+actionId)
   const context = {
     data,
     files,
@@ -68,7 +68,7 @@ module.exports = () => async function requestHandler(req, res) {
   }
 
   try {
-    const output = await runActionServerSide({ func, exportId, fileId, debug, context })
+    const output = await runActionServerSide({ func, actionId, fileId, debug, context })
 
     if (!res.headersSent) {
       for (let [key, value] of Object.entries(output.headers)) {

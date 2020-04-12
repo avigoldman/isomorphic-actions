@@ -4,7 +4,7 @@ const allowedKeys = ['data', 'headers', 'status']
 
 module.exports = async function runActionServerSide({
   func,
-  exportId,
+  actionId,
   fileId,
   debug,
   context
@@ -14,7 +14,7 @@ module.exports = async function runActionServerSide({
 
     // output validation
     if (!isPlainObject(output)) {
-      throw new Error(`Expected \`${debug.functionName}\` to return an object. e.g.: return { data: { title: 'My Title', content: '...' } }`)
+      throw new Error(`Expected \`${debug.functionName}\` to return an object. e.g.: return { data: { title: 'My Title', content: '...' } }\n\n Received: ${JSON.stringify(output)}`)
     }
 
     const keys = Object.keys(output)

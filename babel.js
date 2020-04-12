@@ -6,6 +6,8 @@ const shortHash = require('short-hash');
 const { default: generate } = require('@babel/generator');
 
 module.exports = function ({ template, types: t, ...other }) {
+  const importExportAction = template(`import exportAction from 'isomorphic-actions/validators/exportAction'`)();
+
   return {
     name: 'isomorphic-actions',
     pre(state) {
@@ -21,6 +23,9 @@ module.exports = function ({ template, types: t, ...other }) {
         if (path.node.source.value !== 'isomorphic-actions') {
           return
         }
+
+        // add in the ability to export actions
+        this.root.unshiftContainer('body', importExportAction);
 
         const defineActionAliases = path.node.specifiers
           .filter((specifier) => {
@@ -48,7 +53,7 @@ module.exports = function ({ template, types: t, ...other }) {
           return
         }
 
-        // todo - also account for arrays
+        
         // todo - if assigned to property in an object, use that as the name
         // first parent that isn't a function call wrapping defineAction
         const parent = path.findParent((path) => !path.isCallExpression()).node
@@ -56,17 +61,40 @@ module.exports = function ({ template, types: t, ...other }) {
         const name = parent.type === 'VariableDeclarator' ? parent.id.name : parent.type === 'ExportDefaultDeclaration' ? '[Default Export Function]' : '[Anonymous Function]'
         const func = expression.arguments.length > 0 ? expression.arguments[0] : t.nullLiteral()
 
-        // todo check if it is an ObjectExpression with an exportId property
+        // todo - make this work for all identifiers inside declareAction not inside another scope
+        // https://github.com/babel/babel-archive/blob/master/packages/babel-plugin-undeclared-variables-check/src/index.js
+        // ReferencedIdentifier(path) {
+        // console.log(path.node.name)
+        // },
+        // if (func && func.type === 'Identifier') {
+        //   const identifierName = func.loc.identifierName
+        //   // console.log(identifierName)
+        //   const isDefinedGlobally = this.root.scope.hasBinding(identifierName)
+        //   const isDefinedLocally = path.scope.hasBinding(identifierName)
+        //   // the variable exists locally
+        //   if (
+        //       (!isDefinedGlobally && isDefinedLocally) ||
+        //       (isDefinedGlobally && path.scope.hasOwnBinding(identifierName))
+        //     ) {
+        //     throw new Error(`When defining an isomorphic action you must directly pass in a function or use top level variables. \`${identifierName}\` is defined in the local scope. (${expression.loc.start.line}:${expression.loc.start.column})`)
+        //   }
+
+        //   if (!isDefinedGlobally) {
+        //     throw new Error(`When defining an isomorphic action you must directly pass in a function or use top level variables. \`${identifierName}\` is not defined in the global scope. (${expression.loc.start.line}:${expression.loc.start.column})`) 
+        //   }
+        // }
+
+        // todo check if it is an ObjectExpression with an actionId property
         if (func.type === 'ObjectExpression') {
           return
         }
 
-        const exportId = shortHash(generate(expression).code)
+        const actionId = shortHash(generate(expression).code)
 
         /** replace function call with object that contains the details for the helper to find and run the function */
         expression.arguments = [
           t.objectExpression([
-            t.objectProperty(t.stringLiteral('exportId'), t.stringLiteral(exportId)),
+            t.objectProperty(t.stringLiteral('actionId'), t.stringLiteral(actionId)),
             t.objectProperty(t.stringLiteral('fileId'), t.stringLiteral(shortHash(filename))),
             t.objectProperty(t.stringLiteral('endpoint'), t.stringLiteral(endpoint)),
             t.objectProperty(t.stringLiteral('debug'),
@@ -85,18 +113,25 @@ module.exports = function ({ template, types: t, ...other }) {
         ]
 
         /** export the function at the bottom of the file with a prefixed name */
-        this.root.unshiftContainer(
+        this.root.pushContainer(
           'body',
           t.exportNamedDeclaration(
             t.variableDeclaration('const', [
               t.variableDeclarator(
-                t.identifier('__action__'+exportId),
-                func
+                t.identifier('__action__'+actionId),
+                t.callExpression(
+                  t.identifier('exportAction'), [
+                    func
+                ])
               )
             ])
           )
         )
       },
+    },
+    post(state) {
+      // if (this.defineActionAliases) {
+      // }
     }
   };
 }

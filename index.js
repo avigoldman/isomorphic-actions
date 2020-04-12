@@ -1,4 +1,4 @@
-const isFunction = require('lodash/isFunction');
+const isFunction = require('lodash/isFunction')
 const runAction = require('./internals/runAction')
 
 function defineAction(config) {
@@ -7,11 +7,11 @@ function defineAction(config) {
   }
 
 
-  const { exportId, fileId, endpoint, debug } = config
+  const { actionId, fileId, endpoint, debug } = config
 
   return function runner(context) {
     return runAction({
-      exportId,
+      actionId,
       fileId,
       endpoint,
       debug,
