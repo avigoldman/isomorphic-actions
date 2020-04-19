@@ -1,5 +1,7 @@
 const isFunction = require('lodash/isFunction')
 const runAction = require('./internals/runAction')
+const middleware = require('./middleware')
+const connect = require('./middleware/connect')
 
 function defineAction(config) {
   if (isFunction(config)) {
@@ -20,4 +22,4 @@ function defineAction(config) {
   }
 }
 
-module.exports = { defineAction }
+module.exports = { defineAction, middleware, connect }
