@@ -1,5 +1,7 @@
 const _ = require('lodash')
 const axios = require('axios')
+const serialize = require('./utils/serialize')
+const deserialize = require('./utils/deserialize')
 const { deserializeError } = require("serialize-error")
 const IsomorphicError = require('../Error')
 const Data = require('form-data');
@@ -31,7 +33,7 @@ module.exports = async function runAction({
   // Run remote request
   const body = new Data()
   body.append('debug', JSON.stringify(debug))
-  body.append('data', JSON.stringify(context.data))
+  body.append('data', serialize(context.data))
   
   if (context.files) {
     _.toArray(context.files).forEach((file, i) => {
@@ -76,7 +78,8 @@ module.exports = async function runAction({
     }
     
     // otherwise return the data (with response attached if possible)
-    return _.isPlainObject(response.data) ? { ...response.data, __response: response } : response.data
+    const output = deserialize(response.data.data)
+    return _.isPlainObject(output) ? { ...output, __response: response } : output
   }
   // 5xx or critical errors only
   catch (error) {

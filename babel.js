@@ -6,7 +6,7 @@ const shortHash = require('short-hash');
 const { default: generate } = require('@babel/generator');
 
 module.exports = function ({ template, types: t, ...other }) {
-  const importExportAction = template(`import exportAction from 'isomorphic-actions/validators/exportAction'`)();
+  const importExportAction = template(`import exportAction from 'isomorphic-actions/internals/exportAction'`)();
 
   return {
     name: 'isomorphic-actions',
@@ -31,7 +31,7 @@ module.exports = function ({ template, types: t, ...other }) {
           .filter((specifier) => {
             return (
               specifier.type === 'ImportSpecifier' &&
-              ['defineAction'].includes(specifier.imported.name)
+              specifier.imported.name === 'defineAction'
             )
           })
           .map((specifier) => {
@@ -59,33 +59,11 @@ module.exports = function ({ template, types: t, ...other }) {
         const parent = path.findParent((path) => !path.isCallExpression()).node
 
         const name = parent.type === 'VariableDeclarator' ? parent.id.name : parent.type === 'ExportDefaultDeclaration' ? '[Default Export Function]' : '[Anonymous Function]'
-        const func = expression.arguments.length > 0 ? expression.arguments[0] : t.nullLiteral()
+        const functions = expression.arguments.length > 0 ? expression.arguments : t.nullLiteral()
 
-        // todo - make this work for all identifiers inside declareAction not inside another scope
-        // https://github.com/babel/babel-archive/blob/master/packages/babel-plugin-undeclared-variables-check/src/index.js
-        // ReferencedIdentifier(path) {
-        // console.log(path.node.name)
-        // },
-        // if (func && func.type === 'Identifier') {
-        //   const identifierName = func.loc.identifierName
-        //   // console.log(identifierName)
-        //   const isDefinedGlobally = this.root.scope.hasBinding(identifierName)
-        //   const isDefinedLocally = path.scope.hasBinding(identifierName)
-        //   // the variable exists locally
-        //   if (
-        //       (!isDefinedGlobally && isDefinedLocally) ||
-        //       (isDefinedGlobally && path.scope.hasOwnBinding(identifierName))
-        //     ) {
-        //     throw new Error(`When defining an isomorphic action you must directly pass in a function or use top level variables. \`${identifierName}\` is defined in the local scope. (${expression.loc.start.line}:${expression.loc.start.column})`)
-        //   }
-
-        //   if (!isDefinedGlobally) {
-        //     throw new Error(`When defining an isomorphic action you must directly pass in a function or use top level variables. \`${identifierName}\` is not defined in the global scope. (${expression.loc.start.line}:${expression.loc.start.column})`) 
-        //   }
-        // }
-
-        // todo check if it is an ObjectExpression with an actionId property
-        if (func.type === 'ObjectExpression') {
+        // TODO: check if it is an ObjectExpression with an actionId property instead of a loose object expression check
+        // if this call has already been converted, move on
+        if (functions[0].type === 'ObjectExpression') {
           return
         }
 
@@ -120,18 +98,12 @@ module.exports = function ({ template, types: t, ...other }) {
               t.variableDeclarator(
                 t.identifier('__action__'+actionId),
                 t.callExpression(
-                  t.identifier('exportAction'), [
-                    func
-                ])
+                  t.identifier('exportAction'), functions)
               )
             ])
           )
         )
       },
-    },
-    post(state) {
-      // if (this.defineActionAliases) {
-      // }
     }
   };
 }

@@ -89,7 +89,20 @@ INSERT DIAGRAM
 
 - using req and res
 
+## Supported types
 
+String
+Number
+Boolean
+Null
+Object
+Array
+Date
+RegExp
+Map
+Set
+Undefined
+Infinity
 
 
 

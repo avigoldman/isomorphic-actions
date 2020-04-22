@@ -2,6 +2,8 @@
 
 // const actionFilesMap = { /* object of imports for files that create actions */ }
 
+const serialize = require('./internals/utils/serialize')
+const deserialize = require('./internals/utils/deserialize')
 const { serializeError } = require('serialize-error')
 const get = require('lodash/get')
 const formidable = require('formidable')
@@ -19,7 +21,7 @@ const parseReq = (req) => {
       return resolve({
         files: Object.values(files),
         debug: JSON.parse(get(fields, 'debug')),
-        data: JSON.parse(get(fields, 'data')),
+        data: deserialize(get(fields, 'data')),
       })
     });
   })
@@ -68,14 +70,12 @@ module.exports = () => async function requestHandler(req, res) {
   }
 
   try {
-    const output = await runActionServerSide({ func, actionId, fileId, debug, context })
+    const output = await runActionServerSide({ func, context })
 
     if (!res.headersSent) {
-      for (let [key, value] of Object.entries(output.headers)) {
-        res.setHeader(key, value)
-      }
-
-      res.status(output.status).json(output)
+      res.json({
+        data: serialize(output)
+      })
     }
   }
   catch(error) {
