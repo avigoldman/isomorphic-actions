@@ -1,11 +1,10 @@
 const _ = require('lodash')
 const axios = require('axios')
-const serialize = require('./utils/serialize')
-const deserialize = require('./utils/deserialize')
+const serialize = require('../../utils/serialize')
+const deserialize = require('../../utils/deserialize')
 const { deserializeError } = require("serialize-error")
-const IsomorphicError = require('../Error')
-const Data = require('form-data');
-
+const IsomorphicError = require('../../error')
+require('isomorphic-form-data');
 
 module.exports = async function runAction({
   actionId,
@@ -31,7 +30,7 @@ module.exports = async function runAction({
   }
 
   // Run remote request
-  const body = new Data()
+  const body = new FormData()
   body.append('debug', JSON.stringify(debug))
   body.append('data', serialize(context.data))
   
@@ -43,8 +42,8 @@ module.exports = async function runAction({
 
   try {
     const response = await axios({
-      url: endpoint,
-      params: { a: actionId, f: fileId },
+      url: `${endpoint}/${fileId}`,
+      params: { a: actionId },
       method: 'POST',
       headers: {
         ...context.headers,

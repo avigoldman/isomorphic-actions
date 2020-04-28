@@ -1,5 +1,5 @@
 const isFunction = require('lodash/isFunction')
-const middleware = require('../middleware')
+const middleware = require('./middleware')
 
 module.exports = (...actions) => {
   if (actions.find((action) => !isFunction(action))) {

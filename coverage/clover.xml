@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1588098516066" clover="3.2.0">
+  <project timestamp="1588098516066" name="All files">
+    <metrics statements="153" coveredstatements="142" conditionals="124" coveredconditionals="105" methods="33" coveredmethods="33" elements="310" coveredelements="280" complexity="0" loc="153" ncloc="153" packages="2" files="3" classes="3"/>
+    <package name="build.babel">
+      <metrics statements="151" coveredstatements="140" conditionals="124" coveredconditionals="105" methods="32" coveredmethods="32"/>
+      <file name="client.js" path="/Users/avigoldman/src/projects/isomorphic-actions/isomorphic-actions/build/babel/client.js">
+        <metrics statements="70" coveredstatements="65" conditionals="61" coveredconditionals="52" methods="15" coveredmethods="15"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="17" count="38" type="stmt"/>
+        <line num="18" count="38" type="cond" truecount="2" falsecount="0"/>
+        <line num="19" count="7" type="stmt"/>
+        <line num="20" count="7" type="cond" truecount="1" falsecount="1"/>
+        <line num="25" count="31" type="cond" truecount="1" falsecount="1"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="27" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="32" count="31" type="cond" truecount="2" falsecount="0"/>
+        <line num="33" count="2" type="stmt"/>
+        <line num="36" count="29" type="cond" truecount="4" falsecount="0"/>
+        <line num="42" count="69" type="stmt"/>
+        <line num="43" count="69" type="cond" truecount="2" falsecount="0"/>
+        <line num="47" count="11" type="cond" truecount="1" falsecount="1"/>
+        <line num="48" count="0" type="stmt"/>
+        <line num="51" count="11" type="stmt"/>
+        <line num="52" count="11" type="cond" truecount="2" falsecount="0"/>
+        <line num="53" count="3" type="stmt"/>
+        <line num="58" count="14" type="stmt"/>
+        <line num="59" count="14" type="cond" truecount="5" falsecount="0"/>
+        <line num="60" count="13" type="stmt"/>
+        <line num="65" count="10" type="stmt"/>
+        <line num="66" count="10" type="cond" truecount="1" falsecount="1"/>
+        <line num="67" count="10" type="stmt"/>
+        <line num="71" count="1" type="stmt"/>
+        <line num="72" count="9" type="stmt"/>
+        <line num="76" count="9" type="stmt"/>
+        <line num="77" count="9" type="stmt"/>
+        <line num="80" count="9" type="stmt"/>
+        <line num="81" count="9" type="stmt"/>
+        <line num="84" count="16" type="cond" truecount="1" falsecount="1"/>
+        <line num="85" count="0" type="stmt"/>
+        <line num="88" count="16" type="stmt"/>
+        <line num="89" count="16" type="cond" truecount="4" falsecount="0"/>
+        <line num="90" count="3" type="stmt"/>
+        <line num="91" count="3" type="stmt"/>
+        <line num="97" count="17" type="stmt"/>
+        <line num="98" count="17" type="cond" truecount="2" falsecount="0"/>
+        <line num="104" count="2" type="stmt"/>
+        <line num="106" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="110" count="0" type="stmt"/>
+        <line num="112" count="2" type="stmt"/>
+        <line num="118" count="16" type="stmt"/>
+        <line num="119" count="16" type="cond" truecount="4" falsecount="0"/>
+        <line num="120" count="2" type="stmt"/>
+        <line num="121" count="2" type="stmt"/>
+        <line num="122" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="126" count="2" type="stmt"/>
+        <line num="137" count="9" type="stmt"/>
+        <line num="138" count="14" type="stmt"/>
+        <line num="139" count="14" type="stmt"/>
+        <line num="141" count="14" type="stmt"/>
+        <line num="154" count="10" type="cond" truecount="2" falsecount="0"/>
+        <line num="155" count="2" type="stmt"/>
+        <line num="158" count="8" type="stmt"/>
+        <line num="160" count="8" type="stmt"/>
+        <line num="166" count="8" type="stmt"/>
+        <line num="170" count="20" type="cond" truecount="2" falsecount="0"/>
+        <line num="171" count="2" type="stmt"/>
+        <line num="174" count="18" type="stmt"/>
+        <line num="176" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="177" count="10" type="stmt"/>
+        <line num="180" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="181" count="1" type="stmt"/>
+        <line num="184" count="7" type="stmt"/>
+        <line num="185" count="7" type="stmt"/>
+        <line num="186" count="7" type="stmt"/>
+        <line num="187" count="7" type="stmt"/>
+        <line num="190" count="7" type="stmt"/>
+      </file>
+      <file name="server.js" path="/Users/avigoldman/src/projects/isomorphic-actions/isomorphic-actions/build/babel/server.js">
+        <metrics statements="81" coveredstatements="75" conditionals="63" coveredconditionals="53" methods="17" coveredmethods="17"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="20" count="47" type="stmt"/>
+        <line num="21" count="47" type="cond" truecount="2" falsecount="0"/>
+        <line num="22" count="8" type="stmt"/>
+        <line num="23" count="8" type="cond" truecount="1" falsecount="1"/>
+        <line num="28" count="39" type="cond" truecount="1" falsecount="1"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="30" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="35" count="39" type="cond" truecount="2" falsecount="0"/>
+        <line num="36" count="23" type="stmt"/>
+        <line num="39" count="16" type="cond" truecount="4" falsecount="0"/>
+        <line num="45" count="85" type="stmt"/>
+        <line num="46" count="85" type="cond" truecount="2" falsecount="0"/>
+        <line num="50" count="18" type="cond" truecount="1" falsecount="1"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="54" count="18" type="stmt"/>
+        <line num="55" count="18" type="cond" truecount="2" falsecount="0"/>
+        <line num="56" count="12" type="stmt"/>
+        <line num="61" count="22" type="stmt"/>
+        <line num="62" count="22" type="cond" truecount="5" falsecount="0"/>
+        <line num="63" count="14" type="stmt"/>
+        <line num="68" count="30" type="stmt"/>
+        <line num="69" count="30" type="cond" truecount="2" falsecount="0"/>
+        <line num="70" count="28" type="stmt"/>
+        <line num="74" count="1" type="stmt"/>
+        <line num="75" count="10" type="stmt"/>
+        <line num="80" count="10" type="stmt"/>
+        <line num="84" count="10" type="stmt"/>
+        <line num="85" count="10" type="stmt"/>
+        <line num="86" count="10" type="stmt"/>
+        <line num="87" count="10" type="stmt"/>
+        <line num="91" count="10" type="stmt"/>
+        <line num="93" count="10" type="stmt"/>
+        <line num="98" count="10" type="stmt"/>
+        <line num="99" count="10" type="stmt"/>
+        <line num="107" count="8" type="stmt"/>
+        <line num="114" count="10" type="stmt"/>
+        <line num="115" count="10" type="stmt"/>
+        <line num="118" count="30" type="cond" truecount="1" falsecount="1"/>
+        <line num="119" count="0" type="stmt"/>
+        <line num="122" count="30" type="stmt"/>
+        <line num="123" count="30" type="cond" truecount="4" falsecount="0"/>
+        <line num="124" count="4" type="stmt"/>
+        <line num="125" count="4" type="stmt"/>
+        <line num="131" count="17" type="stmt"/>
+        <line num="132" count="17" type="cond" truecount="2" falsecount="0"/>
+        <line num="138" count="2" type="stmt"/>
+        <line num="140" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="144" count="0" type="stmt"/>
+        <line num="146" count="2" type="stmt"/>
+        <line num="152" count="51" type="stmt"/>
+        <line num="153" count="51" type="cond" truecount="4" falsecount="0"/>
+        <line num="154" count="3" type="stmt"/>
+        <line num="155" count="3" type="stmt"/>
+        <line num="156" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="160" count="3" type="stmt"/>
+        <line num="171" count="10" type="stmt"/>
+        <line num="172" count="17" type="stmt"/>
+        <line num="173" count="17" type="stmt"/>
+        <line num="175" count="17" type="stmt"/>
+        <line num="188" count="30" type="cond" truecount="2" falsecount="0"/>
+        <line num="189" count="22" type="stmt"/>
+        <line num="192" count="8" type="stmt"/>
+        <line num="194" count="8" type="stmt"/>
+        <line num="200" count="8" type="stmt"/>
+        <line num="204" count="44" type="cond" truecount="2" falsecount="0"/>
+        <line num="205" count="4" type="stmt"/>
+        <line num="208" count="40" type="stmt"/>
+        <line num="210" count="40" type="cond" truecount="2" falsecount="0"/>
+        <line num="211" count="32" type="stmt"/>
+        <line num="214" count="8" type="cond" truecount="1" falsecount="1"/>
+        <line num="215" count="0" type="stmt"/>
+        <line num="218" count="8" type="stmt"/>
+        <line num="219" count="8" type="stmt"/>
+        <line num="220" count="8" type="stmt"/>
+        <line num="221" count="8" type="stmt"/>
+        <line num="222" count="8" type="cond" truecount="1" falsecount="1"/>
+        <line num="225" count="8" type="stmt"/>
+        <line num="245" count="8" type="stmt"/>
+        <line num="256" count="8" type="stmt"/>
+      </file>
+    </package>
+    <package name="utils">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="hash.js" path="/Users/avigoldman/src/projects/isomorphic-actions/isomorphic-actions/utils/hash.js">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="4" count="30" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

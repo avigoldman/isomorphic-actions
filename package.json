@@ -5,19 +5,25 @@
   "main": "index.js",
   "author": "Avi Goldman",
   "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
   "dependencies": {
     "@babel/generator": "^7.9.5",
     "axios": "^0.19.2",
-    "form-data": "^3.0.0",
     "formidable": "^1.2.2",
+    "isomorphic-form-data": "^2.0.0",
     "lodash": "^4.17.15",
     "safe-eval": "^0.4.1",
     "serialize-error": "^6.0.0",
     "serialize-javascript": "^3.0.0",
     "short-hash": "^1.0.0",
-    "webpack-virtual-modules": "^0.2.1"
+    "webpack": "^4.43.0"
   },
   "devDependencies": {
-    "webpack": "^4.42.1"
+    "@babel/core": "^7.9.0",
+    "@babel/preset-react": "^7.9.4",
+    "jest": "^25.4.0",
+    "prettier": "^2.0.5"
   }
 }

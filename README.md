@@ -56,7 +56,7 @@ INSERT DIAGRAM
 
 ## Actions
 
-### defineAction
+### createAction
 
 - create an action
   - single param - context
