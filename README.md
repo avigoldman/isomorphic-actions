@@ -4,15 +4,12 @@
 
 When creating web apps you have to communicate between the server and browser for everything – authentication, forms, data fetching, etc. There are a lot decisions and overhead to get your server up and running that isn't necessary for most applications. Isomorphic actions takes a no-overhead approach, so you can write server-side functions next to your client side code side, and run them like any function.
 
-### Why use isomorphic actions?
-
-* 💝**Intuitive:** actions run identically on the server and in the browser - exactly as you'd expect them to
-* 💢**Native Errors:** Errors are thrown natively – no special handling to learn
-* 🔌**Framework Plugins:** Plugins for popular frameworks including [Next.js](#) and [Gatsby](#)
+### Example
 
 ```jsx
+import { createAction } from 'isomorphic-actions'
 /** this runs on the server */
-export const getFile = createSimpleAction(async function (file) {
+export const getFile = createAction(async ({ data: { file } }) => {
   return fs.readFile('/path/to/files/'+file, 'utf8')
 })
 
@@ -23,7 +20,7 @@ export default function({ content = '' }) {
   async function handleClick() {
     setText('')
     try {
-      const content = await getFile('README.md')
+      const content = await getFile({ data: { file: 'README.md'} })
       setText(content)
     }
     catch(e) {
@@ -41,70 +38,44 @@ export default function({ content = '' }) {
 ```
 
 
-### How does it work?
-
-INSERT DIAGRAM
-
 
 ## Getting Started
 
 ### Configuration: Next.js
 
-### Configuration: Gatsby
+##### 1. Add the configuration to your next.config.js
 
-### Configuration: Do it yourself
+```js
+const withIsomorphicActions = require('isomorphic-actions/next')()
 
-## Actions
-
-### createAction
-
-- create an action
-  - single param - context
-  - may only appear at the top level
-  - returns { results, headers, status }
-- run an action
-
-### Error handling
-
-- throwing errors
-- http status
-  - default
-  - overriding 
-- IsomorphicError
-  - status
-  - data
-
-### File uploads
+module.exports = withIsomorphicActions({
+  // add your next.config.js config here
+})
+```
 
 
+##### 2. Create an API route in your pages
 
-## Middleware
+The file path should be `pages/actions/[id].js`. It should have the following content.
 
-- pipe function
+```js
+export server, { config } from 'isomorphic-actions/server'
 
-
-## Hooks
-
-## Advanced
-
-- using req and res
-
-## Supported types
-
-String
-Number
-Boolean
-Null
-Object
-Array
-Date
-RegExp
-Map
-Set
-Undefined
-Infinity
+export default server({ output: process.env.ISOMORPHIC_ACTIONS_OUTPUT })
+export { config }
+```
 
 
+##### 3. Create your first action
 
 
-This project was inspired by `getServerSideProps` in [Next.js](http://nextjs.org/)
+In any page or component you can now import `createAction` from `isomorphic-actions` and create your first action.
+
+```js
+import { createAction } from 'isomorphic-actions'
+
+const hello = createAction(async () => 'hello from the server')
+
+export default () => {
+  return <button onClick={async () => alert(await hello())}>click me</button>
+} 

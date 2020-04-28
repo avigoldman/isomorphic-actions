@@ -7,8 +7,6 @@ const IsomorphicError = require('../../error')
 const { serializeError } = require('serialize-error')
 
 module.exports = ({ output = process.env.ISOMORPHIC_ACTIONS_OUTPUT } = {}) => (req, res) => {
-  console.log(output)
-
   const url = new URL(`http://example.com${req.url}`)
   const fileId = _.last(url.pathname.split('/'))
 

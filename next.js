@@ -4,7 +4,7 @@ const IsomorphicActionsPlugin = require('./build/webpack')
 
 module.exports = function withIsomorphicActionsGenerator({
   endpoint = "/api/actions",
-  output = `./cache/actions`
+  output = "./cache/actions"
 } = {}) {
   return function withIsomorphicActions(nextConfig = {}) {
     return {
